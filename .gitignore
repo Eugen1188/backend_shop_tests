@@ -1,0 +1,23 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+
+# Django DB
+*.sqlite3
+
+# Environment variables
+.env
+
+# Virtual env
+venv/
+
+# IDEs
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Static/media (optional)
+staticfiles/
+media/
