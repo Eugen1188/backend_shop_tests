@@ -3,8 +3,7 @@ from django.db import models
 class Category(models.Model):
     name = models.CharField(max_length=100)
     def __str__(self):
-        product_names = ", ".join([product.name for product in self.products.all()])
-        return f"{self.name} ({product_names})" if product_names else self.name
+        return self.name
 
 class Product(models.Model):
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE, null=True, blank=True)
