@@ -13,9 +13,9 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'name']
 
-class ProductDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+# class ProductDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
 
 class CategoryListAPIView(ListAPIView):
     queryset = Category.objects.all()
