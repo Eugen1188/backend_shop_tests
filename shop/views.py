@@ -1,11 +1,10 @@
 from django.shortcuts import render
-from rest_framework import generics, filters
+from rest_framework import generics, filters, viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Category, Product, Order, ShippingAddress
 from .serializers import CategorySerializer, ProductSerializer, OrderSerializer, ShippingAddressSerializer
-from rest_framework.generics import ListAPIView
 
-class ProductListCreateAPIView(generics.ListCreateAPIView):
+class ProductListViewset(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -17,7 +16,7 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
 #     queryset = Product.objects.all()
 #     serializer_class = ProductSerializer
 
-class CategoryListAPIView(ListAPIView):
+class CategoryListAPIView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
