@@ -17,7 +17,9 @@ class Product(models.Model):
         return self.name
     
 class Order(models.Model):
+
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    shippingAddress = models.ForeignKey('ShippingAddress', related_name='orders', on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, default='Pending')
 
