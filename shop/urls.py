@@ -1,5 +1,5 @@
 from django.urls import include, path
-from .views import CategoryListAPIView, ProductListViewset, OrderListCreateView, ShippingAddressListCreateView
+from .views import CategoryListAPIView, ProductListViewset, OrderListCreateView
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
