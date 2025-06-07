@@ -12,10 +12,6 @@ class ProductListViewset(viewsets.ModelViewSet):
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'name']
 
-# class ProductDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Product.objects.all()
-#     serializer_class = ProductSerializer
-
 class CategoryListAPIView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
