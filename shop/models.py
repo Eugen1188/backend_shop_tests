@@ -16,6 +16,14 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='products/')  # z.B. MEDIA_ROOT/products/
+    color = models.CharField(max_length=50, blank=True)  # optional für Farbnamen
+
+    def __str__(self):
+        return f"{self.product.name} - {self.color or 'default'}"
+    
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     shippingAddress = models.ForeignKey('ShippingAddress', related_name='orders', on_delete=models.SET_NULL, null=True, blank=True)
