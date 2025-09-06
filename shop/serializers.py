@@ -5,7 +5,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(read_only=True)
     class Meta:
         model = ProductImage
-        fields = ['id', 'image', 'color']
+        fields = ['id', 'image', 'color', 'color_code']
 
 class ProductSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source='category.name', read_only=True)

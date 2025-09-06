@@ -18,9 +18,9 @@ class Product(models.Model):
     
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='products/')  # z.B. MEDIA_ROOT/products/
-    color = models.CharField(max_length=50, blank=True)  # optional für Farbnamen
-
+    image = models.ImageField(upload_to='products/')
+    color = models.CharField(max_length=50, blank=True)
+    color_code = models.CharField(max_length=7, blank=True)
     def __str__(self):
         return f"{self.product.name} - {self.color or 'default'}"
     
