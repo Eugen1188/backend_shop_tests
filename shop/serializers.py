@@ -1,33 +1,46 @@
 from rest_framework import serializers
-from .models import Product, Category, Order, ShippingAddress, ProductImage
+from .models import Category, Product, ProductImage, Order, OrderItem, ShippingAddress
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name']
+
 
 class ProductImageSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(read_only=True)
     class Meta:
         model = ProductImage
         fields = ['id', 'image', 'color', 'color_code']
 
+
 class ProductSerializer(serializers.ModelSerializer):
-    category = serializers.CharField(source='category.name', read_only=True)
-    category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), source='category', write_only=True)
     images = ProductImageSerializer(many=True, read_only=True)
+
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'price', 'category', 'category_id', 'images']
+        fields = ['id', 'name', 'description', 'price', 'category', 'images']
 
-class CategorySerializer(serializers.ModelSerializer):
-    products = ProductSerializer(many=True, read_only=True)
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+    product_id = serializers.PrimaryKeyRelatedField(
+        queryset=Product.objects.all(), source="product", write_only=True
+    )
+
     class Meta:
-        model = Category
-        fields = ['id', 'name', 'products']
+        model = OrderItem
+        fields = ['id', 'product', 'product_id', 'quantity']
+
 
 class ShippingAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShippingAddress
-        fields = '__all__'
+        fields = ['id', 'user', 'order', 'address', 'city', 'zip_code']
+
 
 class OrderSerializer(serializers.ModelSerializer):
-    shippingAddress = ShippingAddressSerializer(read_only=True)
+    items = OrderItemSerializer(many=True, read_only=True)
+
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = ['id', 'user', 'shippingAddress', 'created_at', 'status', 'items']
