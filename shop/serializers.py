@@ -15,7 +15,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
-
+    category = serializers.CharField(source='category.name', read_only=True)    
     class Meta:
         model = Product
         fields = ['id', 'name', 'description', 'price', 'category', 'images']
@@ -26,10 +26,13 @@ class OrderItemSerializer(serializers.ModelSerializer):
     product_id = serializers.PrimaryKeyRelatedField(
         queryset=Product.objects.all(), source="product", write_only=True
     )
+    order = serializers.PrimaryKeyRelatedField(
+        queryset=Order.objects.all(), write_only=True
+    )
 
     class Meta:
         model = OrderItem
-        fields = ['id', 'product', 'product_id', 'quantity']
+        fields = ['id', 'order', 'product', 'product_id', 'quantity']
 
 
 class ShippingAddressSerializer(serializers.ModelSerializer):
