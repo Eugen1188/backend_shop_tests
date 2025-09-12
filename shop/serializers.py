@@ -29,7 +29,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
     order = serializers.PrimaryKeyRelatedField(
         queryset=Order.objects.all(), write_only=True
     )
-
     class Meta:
         model = OrderItem
         fields = ['id', 'order', 'product', 'product_id', 'quantity']
