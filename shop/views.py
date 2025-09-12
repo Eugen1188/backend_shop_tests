@@ -130,3 +130,45 @@ def order_item_detail_view(request, item_id):
     if request.method == 'DELETE':
         item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+from django.shortcuts import render
+from rest_framework.decorators import api_view
+from django.contrib.auth.models import User
+from .models import UserProfile
+from django.views.decorators.csrf import csrf_exempt
+
+@api_view(['POST'])
+@csrf_exempt
+def register_user(request):
+    """
+    Handles user registration by creating a new User and a UserProfile.
+    """
+    if request.method == 'POST':
+        try:
+            # Extract data from the request
+            email = request.data.get('email')
+            password = request.data.get('password')
+            name = request.data.get('name')
+            lastname = request.data.get('lastname')
+            telefonumber = request.data.get('telefonumber')
+            address = request.data.get('address')
+            birthday = request.data.get('birthday')
+
+            # Create the Django User
+            user = User.objects.create_user(username=email, email=email, password=password)
+            
+            # Create the UserProfile linked to the new User
+            UserProfile.objects.create(
+                user=user,
+                telefonumber=telefonumber,
+                address=address,
+                birthday=birthday
+            )
+
+            return Response({'success': True, 'message': 'Registration successful!'})
+        except Exception as e:
+            return Response({'success': False, 'message': str(e)}, status=400)
+    
+    return Response({'success': False, 'message': 'Invalid request method.'}, status=405)
+
