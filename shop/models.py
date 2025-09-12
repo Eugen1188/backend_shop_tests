@@ -66,3 +66,11 @@ class ShippingAddress(models.Model):
         order_info = f"Order ID: {self.order.id}" if self.order else "No specific order"
         user_info = f"User: {self.user.username}" if self.user else "Guest Address"
         return f"{user_info}, Address: {self.address}, {self.city}, {self.zip_code} ({order_info})"
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    telefonumber = models.CharField(max_length=20, blank=True)
+    address = models.CharField(max_length=255, blank=True)
+    birthday = models.DateField(null=True, blank=True)
+    def __str__(self):
+        return f'{self.user.username} Profile'
