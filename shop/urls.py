@@ -12,6 +12,6 @@ urlpatterns = [
     path('order-items/', add_to_order_view, name='add-to-order'),
     path('orders/<int:order_id>/items/', order_items_view, name='order-items'),
     path('order-items/<int:item_id>/', order_item_detail_view, name='order-item-detail'),
-    path('api/register/', views.register_user, name='register_user'),
+    path('register/', views.register_user, name='register_user'),
     path('', include(router.urls)),
 ]

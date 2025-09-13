@@ -1,3 +1,8 @@
+from .models import UserProfile
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
+from shop.models import UserProfile
+from django.contrib.auth.models import User
 import uuid
 from rest_framework import generics, filters, viewsets, status
 from rest_framework.decorators import api_view, permission_classes
@@ -11,13 +16,16 @@ from .serializers import CategorySerializer, ProductSerializer, OrderSerializer,
 # Product & Category Views
 # ---------------------------
 
+
 class ProductListViewset(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend,
+                       filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['category']
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'name']
+
 
 class CategoryListAPIView(generics.ListAPIView):
     queryset = Category.objects.all()
@@ -27,9 +35,11 @@ class CategoryListAPIView(generics.ListAPIView):
 # Order & Shipping Views
 # ---------------------------
 
+
 class OrderListCreateView(generics.ListCreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
 
 class ShippingAddressListCreateView(generics.ListCreateAPIView):
     queryset = ShippingAddress.objects.all()
@@ -39,20 +49,24 @@ class ShippingAddressListCreateView(generics.ListCreateAPIView):
 # Hilfsfunktion für offene Bestellungen
 # ---------------------------
 
+
 def get_or_create_order(request):
     if request.user.is_authenticated:
-        order = Order.objects.filter(user=request.user, status='Pending').first()
+        order = Order.objects.filter(
+            user=request.user, status='Pending').first()
     else:
         session_id = request.session.get('cart_session_id')
         if not session_id:
             session_id = str(uuid.uuid4())
             request.session['cart_session_id'] = session_id
-        order = Order.objects.filter(session_id=session_id, status='Pending').first()
+        order = Order.objects.filter(
+            session_id=session_id, status='Pending').first()
 
     if not order:
         order = Order.objects.create(
             user=request.user if request.user.is_authenticated else None,
-            session_id=None if request.user.is_authenticated else request.session['cart_session_id'],
+            session_id=None if request.user.is_authenticated else request.session[
+                'cart_session_id'],
             status='Pending'
         )
     return order
@@ -60,6 +74,7 @@ def get_or_create_order(request):
 # ---------------------------
 # API Endpoints für Angular
 # ---------------------------
+
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -87,7 +102,8 @@ def add_to_order_view(request):
     except Product.DoesNotExist:
         return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
+    order_item, created = OrderItem.objects.get_or_create(
+        order=order, product=product)
     if not created:
         order_item.quantity += quantity
     else:
@@ -132,43 +148,48 @@ def order_item_detail_view(request, item_id):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-from django.shortcuts import render
-from rest_framework.decorators import api_view
-from django.contrib.auth.models import User
-from .models import UserProfile
-from django.views.decorators.csrf import csrf_exempt
-
 @api_view(['POST'])
-@csrf_exempt
 def register_user(request):
-    """
-    Handles user registration by creating a new User and a UserProfile.
-    """
-    if request.method == 'POST':
-        try:
-            # Extract data from the request
-            email = request.data.get('email')
-            password = request.data.get('password')
-            name = request.data.get('name')
-            lastname = request.data.get('lastname')
-            telefonumber = request.data.get('telefonumber')
-            address = request.data.get('address')
-            birthday = request.data.get('birthday')
+    if request.method != 'POST':
+        return Response({'success': False, 'message': 'Invalid request method.'}, status=405)
 
-            # Create the Django User
-            user = User.objects.create_user(username=email, email=email, password=password)
-            
-            # Create the UserProfile linked to the new User
-            UserProfile.objects.create(
-                user=user,
-                telefonumber=telefonumber,
-                address=address,
-                birthday=birthday
-            )
+    email = request.data.get('email')
+    password = request.data.get('password')
+    name = request.data.get('name')
+    lastname = request.data.get('lastname')
+    telefonumber = request.data.get('telefonumber')
+    address = request.data.get('address')
+    birthday = request.data.get('birthday')
 
-            return Response({'success': True, 'message': 'Registration successful!'})
-        except Exception as e:
-            return Response({'success': False, 'message': str(e)}, status=400)
-    
-    return Response({'success': False, 'message': 'Invalid request method.'}, status=405)
+    # Check if user already exists
+    if User.objects.filter(email=email).exists():
+        return Response({'success': False, 'message': 'User with this email already exists.'}, status=400)
 
+    # Create user
+    user = User.objects.create_user(
+        username=name + lastname,
+        email=email,
+        password=password,
+        first_name=name,
+        last_name=lastname
+    )
+
+    # Create profile if it doesn't exist, otherwise update it
+    if not hasattr(user, 'userprofile'):
+        UserProfile.objects.create(
+            user=user,
+            telefonumber=telefonumber,
+            address=address,
+            birthday=birthday
+        )
+    else:
+        profile = user.userprofile
+        if not profile.telefonumber:
+            profile.telefonumber = telefonumber
+        if not profile.address:
+            profile.address = address
+        if not profile.birthday:
+            profile.birthday = birthday
+        profile.save()
+
+    return Response({'success': True, 'message': 'Registration successful!'})
