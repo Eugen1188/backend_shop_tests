@@ -3,8 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import ProductListViewset, CategoryListAPIView, get_or_create_order_view, add_to_order_view, order_items_view, order_item_detail_view
 from . import views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import profile
-
+from .views import profile_view
 
 router = DefaultRouter()
 router.register(r'products', ProductListViewset, basename='product')
@@ -21,7 +20,7 @@ urlpatterns = [
     path('protected/endpoint', views.protected_endpoint, name='protected-endpoint'),
     path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path('profile/', profile, name='profile'),
+    path('profile/', profile_view, name='profile'),
 
     path('', include(router.urls)),
 ]

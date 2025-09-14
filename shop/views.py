@@ -199,16 +199,27 @@ def register_user(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def protected_endpoint(request):
-    return Response({"message": "Hello, JWT works!"})
+    return Response({
+        'message': f'Hello {request.user.username}, you are authenticated!'
+    })
 
 
+# views.py
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def profile(request):
+def profile_view(request):
     user = request.user
+    try:
+        user_profile = user.userprofile  # OneToOne field
+    except Exception:
+        user_profile = None
+
     return Response({
         'username': user.username,
-        'email': user.email,
         'first_name': user.first_name,
         'last_name': user.last_name,
+        'email': user.email,
+        'telefonnumber': user_profile.telefonumber if user_profile else '',
+        'address': user_profile.address if user_profile else '',
+        'birthday': user_profile.birthday if user_profile else '',
     })
