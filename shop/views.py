@@ -1,3 +1,4 @@
+from rest_framework.permissions import IsAuthenticated
 from .models import UserProfile
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
@@ -193,3 +194,21 @@ def register_user(request):
         profile.save()
 
     return Response({'success': True, 'message': 'Registration successful!'})
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def protected_endpoint(request):
+    return Response({"message": "Hello, JWT works!"})
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def profile(request):
+    user = request.user
+    return Response({
+        'username': user.username,
+        'email': user.email,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+    })
