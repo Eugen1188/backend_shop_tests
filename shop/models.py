@@ -84,6 +84,6 @@ class UserProfile(models.Model):
     is_verified = models.BooleanField(default=False)  # <-- new
     verification_token = models.CharField(
         max_length=64, blank=True, null=True)  # <-- token
-
+    password_reset_token = models.CharField(max_length=32, blank=True)  # new
     def __str__(self):
         return f'{self.user.username} Profile'

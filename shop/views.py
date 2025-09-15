@@ -268,3 +268,59 @@ def verify_email(request):
         return HttpResponseRedirect("http://localhost:4200/email-verified")
     else:
         return Response({'error': 'Invalid token'}, status=400)
+
+
+@api_view(['POST'])
+def request_password_reset(request):
+    email = request.data.get('email')
+    if not email:
+        return Response({'error': 'Email is required'}, status=400)
+
+    try:
+        user = User.objects.get(email=email)
+        profile = user.userprofile
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=404)
+
+    token = get_random_string(length=32)
+    profile.password_reset_token = token
+    profile.save()
+
+    reset_link = f"http://localhost:4200/reset-password?token={token}&email={email}"
+
+    send_mail(
+        'Reset your password',
+        f'Click this link to reset your password: {reset_link}',
+        'john455454@gmail.com',
+        [email],
+        fail_silently=False,
+    )
+
+    return Response({'message': 'Password reset email sent!'})
+
+
+@api_view(['POST'])
+def reset_password(request):
+    email = request.data.get('email')
+    token = request.data.get('token')
+    new_password = request.data.get('password')
+
+    if not all([email, token, new_password]):
+        return Response({'error': 'Missing fields'}, status=400)
+
+    try:
+        user = User.objects.get(email=email)
+        profile = user.userprofile
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=404)
+
+    if profile.password_reset_token != token:
+        return Response({'error': 'Invalid token'}, status=400)
+
+    user.set_password(new_password)
+    user.save()
+
+    profile.password_reset_token = ''  # clear the token
+    profile.save()
+
+    return Response({'message': 'Password reset successfully!'})
