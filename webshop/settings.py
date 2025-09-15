@@ -61,7 +61,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
     "http://127.0.0.1:4200",
-    ]
+]
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -90,11 +90,11 @@ WSGI_APPLICATION = 'webshop.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
+}
 
 
 # Password validation
@@ -146,3 +146,18 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+
+# Email backend
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# SMTP server (Gmail)
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+
+
+# Your Gmail credentials
+EMAIL_HOST_USER = 'john455454@gmail.com'  # <-- replace with your Gmail
+EMAIL_HOST_PASSWORD = 'sagl mmlp umhr idox'  # <-- see step 2
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

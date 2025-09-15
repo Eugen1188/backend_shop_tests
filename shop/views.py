@@ -1,3 +1,6 @@
+from django.http import HttpResponseRedirect
+from django.core.mail import send_mail
+from django.utils.crypto import get_random_string
 from rest_framework.permissions import IsAuthenticated
 from .models import UserProfile
 from django.views.decorators.csrf import csrf_exempt
@@ -175,13 +178,18 @@ def register_user(request):
         last_name=lastname
     )
 
+    # Generate a verification token
+    token = get_random_string(32)
+
     # Create profile if it doesn't exist, otherwise update it
     if not hasattr(user, 'userprofile'):
         UserProfile.objects.create(
             user=user,
             telefonumber=telefonumber,
             address=address,
-            birthday=birthday
+            birthday=birthday,
+            verification_token=token,
+            is_verified=False
         )
     else:
         profile = user.userprofile
@@ -191,7 +199,20 @@ def register_user(request):
             profile.address = address
         if not profile.birthday:
             profile.birthday = birthday
+        profile.verification_token = token
+        profile.is_verified = False
         profile.save()
+
+        # Send verification email
+    verification_link = f"http://127.0.0.1:8000/api/verify-email/?token={token}&email={email}"
+
+    send_mail(
+        subject="Verify your email",
+        message=f"Click the link to verify your email: {verification_link}",
+        from_email=None,
+        recipient_list=[email],
+        fail_silently=False
+    )
 
     return Response({'success': True, 'message': 'Registration successful!'})
 
@@ -223,3 +244,27 @@ def profile_view(request):
         'address': user_profile.address if user_profile else '',
         'birthday': user_profile.birthday if user_profile else '',
     })
+
+
+@api_view(['GET'])
+def verify_email(request):
+    token = request.query_params.get('token')
+    email = request.query_params.get('email')
+
+    if not token or not email:
+        return Response({'error': 'Invalid verification link'}, status=400)
+
+    try:
+        user = User.objects.get(email=email)
+        profile = user.userprofile
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=404)
+
+    if profile.verification_token == token:
+        profile.is_verified = True
+        profile.verification_token = ''
+        profile.save()
+        # Redirect to Angular success page
+        return HttpResponseRedirect("http://localhost:4200/email-verified")
+    else:
+        return Response({'error': 'Invalid token'}, status=400)
