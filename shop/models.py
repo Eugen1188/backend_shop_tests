@@ -52,13 +52,14 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(
-        Order, related_name="items", on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    color = models.CharField(max_length=50, blank=True, null=True)  # <--- Farbe
+    size = models.CharField(max_length=50, blank=True, null=True)   # optional Größe
     quantity = models.PositiveIntegerField(default=1)
 
-    def __str__(self):
-        return f"{self.quantity} x {self.product.name}"
+    class Meta:
+        unique_together = ('order', 'product', 'color', 'size')
 
 
 class ShippingAddress(models.Model):

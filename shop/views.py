@@ -97,6 +97,8 @@ def add_to_order_view(request):
 
     product_id = request.data.get('product_id')
     quantity = int(request.data.get('quantity', 1))
+    color = request.data.get('color')
+    size = request.data.get('size')
 
     if not product_id:
         return Response({"error": "product_id is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -107,15 +109,22 @@ def add_to_order_view(request):
         return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
     order_item, created = OrderItem.objects.get_or_create(
-        order=order, product=product)
+        order=order,
+        product=product,
+        color=color,
+        size=size
+    )
+
     if not created:
         order_item.quantity += quantity
     else:
         order_item.quantity = quantity
+
     order_item.save()
 
     serializer = OrderItemSerializer(order_item)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 
 @api_view(['GET'])
