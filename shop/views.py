@@ -1,3 +1,5 @@
+from django.shortcuts import redirect
+from django.contrib.auth import logout
 from .serializers import MyTokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.http import HttpResponseRedirect
@@ -344,3 +346,10 @@ class MyTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         print("Custom login endpoint called!")  # <-- debug message
         return super().post(request, *args, **kwargs)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def accountdelete(request):
+    user = request.user
+    user.delete()
+    return Response({"detail": "Account deleted"}, status=status.HTTP_204_NO_CONTENT)
