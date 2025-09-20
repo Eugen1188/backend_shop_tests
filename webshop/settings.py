@@ -35,17 +35,32 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 # Application definition
 
 INSTALLED_APPS = [
+    # Django default apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Third-party apps
     'corsheaders',
     'rest_framework',
     'django_filters',
+    'django.contrib.sites',     # Required for allauth
+    'allauth',
+    'allauth.account',
+
+    # Your apps
     'shop',
 ]
+
+# Required for allauth
+SITE_ID = 1
+
+# Email verification settings
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_REQUIRED = True
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -56,6 +71,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware"
+
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -161,3 +178,6 @@ EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'john455454@gmail.com'  # <-- replace with your Gmail
 EMAIL_HOST_PASSWORD = 'sagl mmlp umhr idox'  # <-- see step 2
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_REQUIRED = True

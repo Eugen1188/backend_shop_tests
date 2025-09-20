@@ -1,3 +1,5 @@
+from .serializers import MyTokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
@@ -124,7 +126,6 @@ def add_to_order_view(request):
 
     serializer = OrderItemSerializer(order_item)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
 
 @api_view(['GET'])
@@ -333,3 +334,13 @@ def reset_password(request):
     profile.save()
 
     return Response({'message': 'Password reset successfully!'})
+
+
+# views.py
+class MyTokenObtainPairView(TokenObtainPairView):
+
+    serializer_class = MyTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        print("Custom login endpoint called!")  # <-- debug message
+        return super().post(request, *args, **kwargs)

@@ -1,5 +1,9 @@
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from .models import Category, Product, ProductImage, Order, OrderItem, ShippingAddress
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,7 +19,8 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
-    category = serializers.CharField(source='category.name', read_only=True)    
+    category = serializers.CharField(source='category.name', read_only=True)
+
     class Meta:
         model = Product
         fields = ['id', 'name', 'description', 'price', 'category', 'images']
@@ -29,6 +34,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
     order = serializers.PrimaryKeyRelatedField(
         queryset=Order.objects.all(), write_only=True
     )
+
     class Meta:
         model = OrderItem
         fields = ['id', 'order', 'product', 'product_id', 'quantity', 'color']
@@ -45,4 +51,46 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'user', 'shippingAddress', 'created_at', 'status', 'items']
+        fields = ['id', 'user', 'shippingAddress',
+                  'created_at', 'status', 'items']
+
+
+# serializers.py
+
+
+# serializers.py
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        identifier = attrs.get("username")
+        password = attrs.get("password")
+        user = authenticate(username=identifier, password=password)
+        if user is None:
+            try:
+                user_obj = User.objects.get(email=identifier)
+                user = authenticate(
+                    username=user_obj.username, password=password)
+            except User.DoesNotExist:
+                raise serializers.ValidationError(
+                    "Kein Benutzer mit dieser Email"
+                )
+        if user is None:
+            raise serializers.ValidationError(
+                "Ungültiger Benutzername oder E-Mail oder Passwort."
+            )
+
+        # Check if email is verified
+        if hasattr(user, 'userprofile'):
+            if not user.userprofile.is_verified:
+                raise serializers.ValidationError(
+                    "E-Mail nicht verifiziert. Bitte bestätigen Sie Ihre E-Mail vor dem Login."
+                )
+
+        # ✅ Pass correct attrs to parent
+        attrs['username'] = user.username
+        attrs['password'] = password
+
+        print("🔎 Final attrs before super:", attrs)
+
+        return super().validate(attrs)
