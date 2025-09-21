@@ -169,5 +169,4 @@ EMAIL_HOST_USER = 'john455454@gmail.com'  # <-- replace with your Gmail
 EMAIL_HOST_PASSWORD = 'sagl mmlp umhr idox'  # <-- see step 2
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-ACCOUNT_EMAIL_REQUIRED = True
+
