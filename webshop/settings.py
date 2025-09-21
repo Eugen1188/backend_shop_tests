@@ -46,20 +46,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'django_filters',
-    'django.contrib.sites',     # Required for allauth
-    'allauth',
-    'allauth.account',
+
 
     # Your apps
     'shop',
 ]
-
-# Required for allauth
-SITE_ID = 1
-
-# Email verification settings
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-ACCOUNT_EMAIL_REQUIRED = True
 
 
 MIDDLEWARE = [
@@ -71,7 +62,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "allauth.account.middleware.AccountMiddleware"
 
 ]
 
