@@ -28,7 +28,7 @@ urlpatterns = [
     path('verify-email/', verify_email, name='verify-email'),
     path('password-reset-request/', request_password_reset,
          name='request-password-reset'),
-    path('password-reset/', reset_password, name='reset-password'),
+    path('password-reset/', request_password_reset, name='reset-password'),
     path('login-token/', MyTokenObtainPairView.as_view(),
          name='custom_token_obtain_pair'),
     path('delete/', accountdelete, name='delete'),

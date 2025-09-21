@@ -72,7 +72,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware"
-    
+
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -88,7 +88,7 @@ ROOT_URLCONF = 'webshop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR/'shop' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
