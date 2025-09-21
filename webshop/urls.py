@@ -10,6 +10,7 @@ urlpatterns = [
     path('api/', include('shop.urls')),
 
 
+
 ]
 
 if settings.DEBUG:

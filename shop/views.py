@@ -1,3 +1,9 @@
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
+from django.shortcuts import redirect
+from django.contrib.auth import logout
+from .serializers import MyTokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
@@ -124,7 +130,6 @@ def add_to_order_view(request):
 
     serializer = OrderItemSerializer(order_item)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
 
 @api_view(['GET'])
@@ -297,13 +302,23 @@ def request_password_reset(request):
 
     reset_link = f"http://localhost:4200/reset-password?token={token}&email={email}"
 
-    send_mail(
-        'Reset your password',
-        f'Click this link to reset your password: {reset_link}',
-        'john455454@gmail.com',
-        [email],
-        fail_silently=False,
+    # Render HTML template
+    html_content = render_to_string('emails/password_reset.html', {
+        'username': user.username,
+        'reset_link': reset_link,
+    })
+
+    # Fallback plain-text
+    text_content = f"Hallo {user.username}, nutze diesen Link: {reset_link}"
+
+    msg = EmailMultiAlternatives(
+        subject="Passwort zurücksetzen",
+        body=text_content,
+        from_email="john455454@gmail.com",
+        to=[email],
     )
+    msg.attach_alternative(html_content, "text/html")
+    msg.send(fail_silently=False)
 
     return Response({'message': 'Password reset email sent!'})
 
@@ -333,3 +348,21 @@ def reset_password(request):
     profile.save()
 
     return Response({'message': 'Password reset successfully!'})
+
+
+# views.py
+class MyTokenObtainPairView(TokenObtainPairView):
+
+    serializer_class = MyTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        print("Custom login endpoint called!")  # <-- debug message
+        return super().post(request, *args, **kwargs)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def accountdelete(request):
+    user = request.user
+    user.delete()
+    return Response({"detail": "Account deleted"}, status=status.HTTP_204_NO_CONTENT)
