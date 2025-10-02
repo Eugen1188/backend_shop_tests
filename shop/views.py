@@ -1,3 +1,6 @@
+from .serializers import ProfileSerializer
+from .models import UserProfile
+from rest_framework import generics
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import redirect
@@ -366,3 +369,14 @@ def accountdelete(request):
     user = request.user
     user.delete()
     return Response({"detail": "Account deleted"}, status=status.HTTP_204_NO_CONTENT)
+
+
+# views.py
+
+
+class UserProfileDetailView(generics.RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return UserProfile.objects.get(user=self.request.user)

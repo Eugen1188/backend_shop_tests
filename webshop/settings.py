@@ -149,10 +149,14 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
 }
+
 
 # Email backend
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -168,5 +172,3 @@ EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'john455454@gmail.com'  # <-- replace with your Gmail
 EMAIL_HOST_PASSWORD = 'sagl mmlp umhr idox'  # <-- see step 2
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-

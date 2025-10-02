@@ -8,6 +8,8 @@ from .views import verify_email
 from .views import reset_password, request_password_reset
 from .views import MyTokenObtainPairView
 from .views import accountdelete
+from .views import UserProfileDetailView
+
 
 router = DefaultRouter()
 router.register(r'products', ProductListViewset, basename='product')
@@ -31,6 +33,7 @@ urlpatterns = [
     path('password-reset/', request_password_reset, name='reset-password'),
     path('login-token/', MyTokenObtainPairView.as_view(),
          name='custom_token_obtain_pair'),
+    path('savedprofile/', UserProfileDetailView.as_view(), name='profile-detail'),
     path('delete/', accountdelete, name='delete'),
     path('', include(router.urls)),
 ]
