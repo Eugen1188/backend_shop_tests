@@ -105,8 +105,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ['address', 'birthday',
-                  'username', 'first_name', 'last_name', 'email', 'telefonumber']
+        fields = ['telefonumber', 'address', 'birthday',
+                  'username', 'first_name', 'last_name', 'email', ]
 
     def update(self, instance, validated_data):
         print(validated_data)
