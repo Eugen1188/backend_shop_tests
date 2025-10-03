@@ -170,6 +170,7 @@ def order_item_detail_view(request, item_id):
 
 
 @api_view(['POST'])
+@permission_classes([AllowAny])   # 👈 allows anonymous access
 def register_user(request):
     if request.method != 'POST':
         return Response({'success': False, 'message': 'Invalid request method.'}, status=405)
@@ -264,6 +265,7 @@ def profile_view(request):
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])   # 👈 allows anonymous access
 def verify_email(request):
     token = request.query_params.get('token')
     email = request.query_params.get('email')
@@ -282,7 +284,7 @@ def verify_email(request):
         profile.verification_token = ''
         profile.save()
         # Redirect to Angular success page
-        return HttpResponseRedirect("http://localhost:4200/email-verified")
+        return HttpResponseRedirect("http://localhost:4200/verified-email")
     else:
         return Response({'error': 'Invalid token'}, status=400)
 
