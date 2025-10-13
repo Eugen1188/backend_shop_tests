@@ -379,6 +379,6 @@ def accountdelete(request):
 class UserProfileDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
-
+   
     def get_object(self):
         return UserProfile.objects.get(user=self.request.user)

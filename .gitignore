@@ -21,3 +21,4 @@ venv/
 # Static/media (optional)
 staticfiles/
 media/
+webshop/settings.py

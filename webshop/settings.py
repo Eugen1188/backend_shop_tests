@@ -152,23 +152,16 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ]
+    
 }
-
-
-# Email backend
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-# SMTP server (Gmail)
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'w01ff109.kasserver.com'  # replace w0123456 with your KAS login
 EMAIL_PORT = 465
-EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
 
+EMAIL_HOST_USER = 'ioanniskarakasidis@ioanniskarakasidis.com'
+EMAIL_HOST_PASSWORD = '@GP19981999kkkkkk'
 
-# Your Gmail credentials
-EMAIL_HOST_USER = 'john455454@gmail.com'  # <-- replace with your Gmail
-EMAIL_HOST_PASSWORD = 'sagl mmlp umhr idox'  # <-- see step 2
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
