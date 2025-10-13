@@ -152,10 +152,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    
+
 }
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
+staticmethod = ''
 EMAIL_HOST = 'w01ff109.kasserver.com'  # replace w0123456 with your KAS login
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
