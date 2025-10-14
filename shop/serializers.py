@@ -6,11 +6,25 @@ from rest_framework import serializers
 from .models import Category, Product, ProductImage, Order, OrderItem, ShippingAddress
 
 
+class RecursiveField(serializers.BaseSerializer):
+    def to_representation(self, value):
+        if not hasattr(self, "_visited"):
+            self._visited = set()
+
+        if value.id in self._visited:
+            return None
+
+        self._visited.add(value.id)
+        parent_serializer_class = self.parent.parent.__class__
+        return parent_serializer_class(value, context=self.context).data
+
+
 class CategorySerializer(serializers.ModelSerializer):
+    subcategories = RecursiveField(many=True, read_only=True)
+
     class Meta:
         model = Category
-        fields = ['id', 'name']
-
+        fields = ['id', 'name', 'parent', 'subcategories']
 
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
