@@ -20,11 +20,13 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
-    category = serializers.CharField(source='category.name', read_only=True)
+    category_id = serializers.IntegerField(source='category.id', read_only=True)
+    category_name = serializers.CharField(source='category.name', read_only=True)
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'price', 'category', 'images']
+        fields = ['id', 'name', 'description', 'price', 'category_id', 'category_name', 'images']
+
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
