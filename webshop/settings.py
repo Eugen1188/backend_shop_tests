@@ -155,7 +155,7 @@ REST_FRAMEWORK = {
 
 }
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'w01ff109.kasserver.com'  # replace w0123456 with your KAS login
+EMAIL_HOST = 'w01ff109.kasserver.com'  
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
