@@ -276,6 +276,8 @@ def profile_view(request):
         "email": user.email,
         "telefonnumber": user_profile.telefonumber if user_profile else "",
         "address": user_profile.address if user_profile else "",
+        "city": user_profile.city if user_profile else "",
+        "zip_code": user_profile.zip_code if user_profile else "",
         "birthday": user_profile.birthday if user_profile else "",
     }
 

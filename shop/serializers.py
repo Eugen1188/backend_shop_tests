@@ -140,6 +140,8 @@ class ProfileSerializer(serializers.ModelSerializer):
             "id",  # <-- include the user ID here
             "telefonumber",
             "address",
+            "city",
+            "zip_code",
             "birthday",
             "username",
             "first_name",

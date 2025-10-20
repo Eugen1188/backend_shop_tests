@@ -101,12 +101,14 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     telefonumber = models.CharField(max_length=20, blank=True)
     address = models.CharField(max_length=255, blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    zip_code = models.CharField(max_length=20, blank=True)
     birthday = models.DateField(null=True, blank=True)
-    is_verified = models.BooleanField(default=False)  # <-- new
+    is_verified = models.BooleanField(default=False)
     verification_token = models.CharField(
         max_length=64, blank=True, null=True
-    )  # <-- token
-    password_reset_token = models.CharField(max_length=32, blank=True)  # new
+    )
+    password_reset_token = models.CharField(max_length=32, blank=True)
 
     def __str__(self):
         return f"{self.user.username} Profile"
