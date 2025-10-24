@@ -194,6 +194,8 @@ def register_user(request):
     lastname = request.data.get("lastname")
     telefonumber = request.data.get("telefonumber")
     address = request.data.get("address")
+    city = request.data.get("city")
+    zip_code = request.data.get("zip_code")
     birthday = request.data.get("birthday")
 
     # Check if user already exists
@@ -215,13 +217,14 @@ def register_user(request):
     # Generate a verification token
     token = get_random_string(32)
 
-    # Create profile if it doesn't exist, otherwise update it
     if not hasattr(user, "userprofile"):
         UserProfile.objects.create(
             user=user,
             telefonumber=telefonumber,
             address=address,
             birthday=birthday,
+            city=city,
+            zip_code=zip_code,
             verification_token=token,
             is_verified=False,
         )
@@ -233,11 +236,15 @@ def register_user(request):
             profile.address = address
         if not profile.birthday:
             profile.birthday = birthday
+        if not profile.city:
+            profile.city = city
+        if not profile.zip_code:
+            profile.zip_code = zip_code
         profile.verification_token = token
         profile.is_verified = False
-        profile.save()
+    profile.save()
 
-        # Send verification email
+    # Send verification email
     verification_link = (
         f"http://127.0.0.1:8000/api/verify-email/?token={token}&email={email}"
     )
